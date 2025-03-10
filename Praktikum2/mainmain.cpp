@@ -1,3 +1,6 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/glut.h>
 #include <cmath>
 
@@ -12,6 +15,18 @@ void drawCircle(float radius, int segments) {
         float angle = 2.0f * 3.1415926f * i / segments;
         float x = radius * cos(angle);
         float y = radius * sin(angle);
+        glVertex2f(x, y);
+    }
+    glEnd();
+}
+
+// Fungsi untuk menggambar lingkaran kawah oval di bulan
+void drawcircle(float radius, int segments) {
+    glBegin(GL_POLYGON);
+    for (int i = 0; i < segments; ++i) {
+        float angle = 2.0f * 3.1415926f * i / segments;
+        float x = radius * cos(angle)*0.9;
+        float y = radius * sin(angle)*0.78;
         glVertex2f(x, y);
     }
     glEnd();
@@ -32,35 +47,77 @@ void init2D() {
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
+    
+    // -------------------------
+    // Gambar bumi(biru)
+    // -------------------------
+    glPushMatrix();
+        glTranslatef(700.0f, 500.0f, 0.0f);
+        glColor3f(0.0f, 0.4f, 1.0f); // biru
+        drawCircle(40.0f, 36);      // Lingkaran bumi
+    glPopMatrix();
 
     // -------------------------
     // 1. Gambar rumput (hijau)
     // -------------------------
-    glColor3f(0.2f, 0.2f, 0.2f);
-    glBegin(GL_POLYGON);
-        glVertex2f(0.0f,         0.0f);
-        glVertex2f(WINDOW_WIDTH, 0.0f);
-        glVertex2f(WINDOW_WIDTH, 240.0f);
-        glVertex2f(0.0f,         240.0f);
-    glEnd();
-
+    glPushMatrix();
+    	glRotatef(15.0f,0.0f,0.0f,1.0f);
+    	glColor3f(0.5f, 0.5f, 0.5f);
+    	glBegin(GL_POLYGON);
+        	glVertex2f(0.0f,    -600.0f);
+        	glVertex2f(900.0f,  -600.0f);
+        	glVertex2f(900.0f, 120.0f);
+        	glVertex2f(0.0f,   120.0f);
+    	glEnd();
+    glPopMatrix();
+    
     // -------------------------
-    // 2. Gambar bulan (abu)
+    // Gambar kawah bulan 1
     // -------------------------
     glPushMatrix();
-        glTranslatef(700.0f, 500.0f, 0.0f);
-        glColor3f(0.6f, 0.6f, 0.6f); // abu
-        drawCircle(40.0f, 36);      // Lingkaran bulan
+        glTranslatef(750.0f, 080.0f, 0.0f);
+    	glRotatef(18.0f,0.0f,0.0f,1.0f);
+        glColor3f(0.3f, 0.3f, 0.3f); // abu gelap
+        drawcircle(40.0f, 36);      // Lingkaran kawah
     glPopMatrix();
-
+    
+    // -------------------------
+    // Gambar kawah bulan 2
+    // -------------------------
+    glPushMatrix();
+        glTranslatef(178.0f, 080.0f, 0.0f);
+    	glRotatef(10.0f,0.0f,0.0f,1.0f);
+        glColor3f(0.3f, 0.3f, 0.3f); // abu gelap
+        drawcircle(40.0f, 36);      // Lingkaran kawah
+    glPopMatrix();
+    // -------------------------
+    // Gambar kawah bulan 3
+    // -------------------------
+    glPushMatrix();
+        glTranslatef(420.0f, 070.0f, 0.0f);
+    	glRotatef(12.0f,0.0f,0.0f,1.0f);
+        glColor3f(0.3f, 0.3f, 0.3f); // abu gelap
+        drawcircle(40.0f, 36);      // Lingkaran kawah
+    glPopMatrix();
+    // -------------------------
+    // Gambar kawah bulan 4
+    // -------------------------
+    glPushMatrix();
+        glTranslatef(721.0f, 240.0f, 0.0f);
+    	glRotatef(12.4f,0.0f,0.0f,1.0f);
+        glColor3f(0.3f, 0.3f, 0.3f); // abu gelap
+        drawcircle(40.0f, 36);      // Lingkaran kawah
+    glPopMatrix();
     // -------------------------
     // 3. Gambar mobil
     // -------------------------
-    // Posisi dasar mobil di (200, 200)
+    // Posisi dasar mobil di (225,80)
     glPushMatrix();
-        glTranslatef(150.0f, 135.0f, 0.0f);
+        glTranslatef(225.0f, 080.0f, 0.0f);
+        glRotatef(15.0f,0.0f,0.0f,1.0f);
+        glRotatef(0.0f, 0.0f, 0.0f, 0.0f);
 
-        // 3c. Body utama mobil (merah)
+        // Body utama mobil (merah)
         glColor3f(0.0f, 0.0f, 0.97f);  // Merah
         glBegin(GL_POLYGON);	
             glVertex2f(50.0f,  20.0f);
@@ -133,7 +190,7 @@ void display() {
             glVertex2f(50.0f, 40.0f);
         glEnd();
         
-        // 3a. Roda depan (lingkaran hitam)
+        // Roda depan (lingkaran hitam)
         glPushMatrix();
             glTranslatef(290.0f, 20.0f, 0.0f); 
             glColor3f(0.0f, 0.0f, 0.0f);      // Hitam
@@ -143,7 +200,7 @@ void display() {
             drawCircle(18.0f, 30);
         glPopMatrix();
 
-        // 3b. Roda belakang
+        //  Roda belakang
         glPushMatrix();
             glTranslatef(95.0f, 20.0f, 0.0f);
             glColor3f(0.0f, 0.0f, 0.0f);
@@ -153,9 +210,9 @@ void display() {
             drawCircle(18.0f, 30);
         glPopMatrix();
 
-        // 3d. Jendela (putih keabu-abuan)
+        // Jendela (putih keabu-abuan)
         // Jendela depan
-        glColor3f(0.8f, 0.8f, 0.8f);
+        glColor3f(0.6f, 0.8f, 1.0f);
         glBegin(GL_POLYGON);
             glVertex2f(70.0f, 80.0f);
             glVertex2f(180.0f, 80.0f);
@@ -172,7 +229,7 @@ void display() {
         glEnd();
 
 
-        // 3g. Pegangan pintu (hitam)
+        // Pegangan pintu (hitam)
         glColor3f(0.0f, 0.0f, 0.0f);
         // Pegangan pintu depan
         glBegin(GL_POLYGON);
@@ -199,7 +256,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("2D Car Scene");
+    glutCreateWindow("gambarmobil");
     init2D();
     glutDisplayFunc(display);
     glutMainLoop();
